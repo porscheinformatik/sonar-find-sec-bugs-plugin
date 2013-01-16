@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+
+    <rule key="PREDICTABLE_RANDOM" priority="MAJOR">
+        <configKey><![CDATA[PREDICTABLE_RANDOM]]></configKey>
+        <name><![CDATA[Security - Predictable Pseudo Random Generator (PRG) [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The use of a predictable random value can lead to vulnerability in those contexts:</p>
+<ul>
+<li>CSRF token</li>
+<li>password reset token (sent by email)</li>
+<li>or any other secret value</li>
+</ul>
+<p>A quick fix would be to replace the instanciation of <b>java.util.Random</b> by <b>java.security.SecureRandom</b>.
+
+<p>
+<b>References</b><br/>
+<a href="http://jazzy.id.au/default/2010/09/20/cracking_random_number_generators_part_1.html">Cracking Random Number Generators - Part 1 (http://jazzy.id.au)</a><br/>
+<a href="https://www.securecoding.cert.org/confluence/display/java/MSC02-J.+Generate+strong+random+numbers">CERT: MSC02-J. Generate strong random numbers</a><br/>
+<a href="http://cwe.mitre.org/data/definitions/330.html">CWE-330: Use of Insufficiently Random Values</a>
+</p>
+
+]]>
+        </description>
+    </rule>
+
+    <rule key="SERVLET_PARAMETER" priority="MAJOR">
+        <configKey><![CDATA[SERVLET_PARAMETER]]></configKey>
+        <name><![CDATA[Security - Servlet parameter [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The Servlet can read GET and POST parameters from various method. The value obtain should be consider unsafe.
+In may be needed to sanitize those values when calling sensitive api such as:</p>
+<ul>
+<li>SQL query (May lead to SQL injection)</li>
+<li>File opening (May lead to path traversal)</li>
+<li>Command execution (Potential Command injection)</li>
+<li>HTML construction (Potential XSS)</li>
+<li>etc...</li>
+</ul>
+]]>
+        </description>
+    </rule>
+
+    <rule key="SERVLET_CONTENT_TYPE" priority="MAJOR">
+        <configKey><![CDATA[SERVLET_CONTENT_TYPE]]></configKey>
+        <name><![CDATA[Security - Request Content-Type [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+The HTTP header Content-Type can be control by the client.
+]]>
+        </description>
+    </rule>
+
+
+    <rule key="SERVLET_SERVER_NAME" priority="MAJOR">
+        <configKey><![CDATA[SERVLET_SERVER_NAME]]></configKey>
+        <name><![CDATA[Security - Request Hostname (ServerName/Host) [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The hostname can often be control by the client. Both <code>ServletRequest.getServerName()</code> and
+<code>HttpServletRequest.getHeader("Host")</code> have the same behavior which is to extract the <code>Host</code> header.</p>
+<pre>
+GET /testpage HTTP/1.1
+Host: www.example.com
+[...]
+</pre>
+<p>
+The web container serving your application may redirect requests to your application by default. This would allow
+a malicious user to place any value. It is recommended to have no assumption on the value and therefor to do proper
+escaping and validation if needed.
+</p>
+]]>
+        </description>
+    </rule>
+
+
+    <rule key="SERVLET_SESSION_ID" priority="MAJOR">
+        <configKey><![CDATA[SERVLET_SESSION_ID]]></configKey>
+        <name><![CDATA[Security - Request Session Id [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+The method <a href="http://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequest.html#getRequestedSessionId()"><code>HttpServletRequest.getRequestedSessionId()</code></a>
+typically return the value of the cookie <code>JSESSIONID</code>.
+</p>
+<p>
+The value pass to the client is generally an alphanumeric value (ie: <code>JSESSIONID=jp6q31lq2myn</code>). However the value can be altered by the client. The following HTTP request illustrate the potential deviation.
+<pre>
+GET /somePage HTTP/1.1
+Host: yourwebsite.com
+User-Agent: Mozilla/5.0
+Cookie: JSESSIONID=Get ready to received any value!!??'''&quote;&gt;
+</pre>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="SERVLET_QUERY_STRING" priority="MAJOR">
+        <configKey><![CDATA[SERVLET_QUERY_STRING]]></configKey>
+        <name><![CDATA[Security - Request Query String [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The query string is the concatenation of the GET parameters and values. Parameter others that those intended can
+be passed.</p>
+<p>For the url request <code>/app/servlet.htm?a=1&b=2</code>, the query string extract will be <code>a=1&b=2</code></p>
+]]>
+        </description>
+    </rule>
+
+
+    <rule key="SERVLET_HEADER" priority="MAJOR">
+        <configKey><![CDATA[SERVLET_HEADER]]></configKey>
+        <name><![CDATA[Security - Request Header [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>Request headers can easily be alter by the client. No assumption should be make that the request come from a regular browser.</p>
+]]>
+        </description>
+    </rule>
+
+
+    <rule key="SERVLET_HEADER_REFERER" priority="MAJOR">
+        <configKey><![CDATA[SERVLET_HEADER_REFERER]]></configKey>
+        <name><![CDATA[Security - Request Header "Referer" [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+Behavior:
+<ul>
+<li>Any value can be assigned to this header (request coming from malicious user)</li>
+<li>The "Referer" will not be present if the request was initiated from another origin that is secure (https).</li>
+</ul>
+</p>
+<p>
+Recommendations:
+<ul>
+<li>No access control should be base on this header.</li>
+<li>No CSRF protection should be based only on this value (<a href="http://www.w3.org/Protocols/HTTP/HTRQ_Headers.html#z14">Because it is optional</a>).</li>
+</ul>
+]]>
+        </description>
+    </rule>
+
+    <rule key="SERVLET_HEADER_USER_AGENT" priority="MAJOR">
+        <configKey><![CDATA[SERVLET_HEADER_USER_AGENT]]></configKey>
+        <name><![CDATA[Security - Request Header "User-Agent" [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The header "User-Agent" can be easily spoofed by the client. Adopting different behavior base on the User-Agent (for
+crawler UA) is not recommended.</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="SERVLET_HEADER" priority="MAJOR">
+        <configKey><![CDATA[SERVLET_HEADER]]></configKey>
+        <name><![CDATA[Security - Request Header [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>Request header can easily be alter by the client. No assumption should be make that the request come from a regular browser</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="COOKIE_USAGE" priority="MAJOR">
+        <configKey><![CDATA[COOKIE_USAGE]]></configKey>
+        <name><![CDATA[Security - Cookie usage [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The information store in the cookie should not be sensitive or related to the session. In most case, session
+variables should be used. see HttpSession (HttpServletRequest.getSession())</p>
+<p>Cookies can be use for information that need live longer than the session.</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="PATH_TRAVERSAL_IN" priority="MAJOR">
+        <configKey><![CDATA[PATH_TRAVERSAL_IN]]></configKey>
+        <name><![CDATA[Security - Potential Path traversal (read file) [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>A file is open to read its content. The path given is a <b>dynamic</b> parameter.</p>
+<p>If unfiltered parameter is pass to this file API, content from an arbitrary path could be read.</p>
+<p>This detector identify <b>potential</b> path transversal. In many case, the construct file path is not control
+by the user. If it is the case, this bug instance can be ignored.</p>
+<p>
+<b>References</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246952/Path%20Traversal">WASC : Path Traversal</a><br/>
+<a href="https://www.owasp.org/index.php/Path_Traversal">OWASP : Path Traversal</a><br/>
+<a href="http://capec.mitre.org/data/definitions/126.html">CAPEC-126: Path Traversal</a><br/>
+<a href="http://cwe.mitre.org/data/definitions/99.html">CWE-99: Improper Control of Resource Identifiers ('Resource Injection')</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="PATH_TRAVERSAL_OUT" priority="MAJOR">
+        <configKey><![CDATA[PATH_TRAVERSAL_OUT]]></configKey>
+        <name><![CDATA[Security - Potential Path traversal (write file) [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The class selected is use to open a file handle using a <b>dynamic</b> parameter.</p>
+<p>If unfiltered input is pass to this function, content could be writen to an arbitrary path.</p>
+<p>
+<b>References</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246952/Path%20Traversal">WASC-33 : Path Traversal</a><br/>
+<a href="https://www.owasp.org/index.php/Path_Traversal">OWASP : Path Traversal</a><br/>
+<a href="http://capec.mitre.org/data/definitions/126.html">CAPEC-126: Path Traversal</a><br/>
+<a href="http://cwe.mitre.org/data/definitions/99.html">CWE-99: Improper Control of Resource Identifiers ('Resource Injection')</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="COMMAND_INJECTION" priority="MAJOR">
+        <configKey><![CDATA[COMMAND_INJECTION]]></configKey>
+        <name><![CDATA[Security - Command Injection [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The api highlight is used to executed system command. If unfiltered input is passed to this api, it can lead arbitrary command execution.</p>
+<p>
+<b>Reference</b><br/>
+<a href="https://www.owasp.org/index.php/Command_Injection">OWASP : Command Injection</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="WEAK_FILENAMEUTILS" priority="MAJOR">
+        <configKey><![CDATA[WEAK_FILENAMEUTILS]]></configKey>
+        <name><![CDATA[Security - FilenameUtils partial filtering [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>Some FilenameUtils' methods doesn't filter nullbyte.</p>
+<p>The risk come from the removal of characters following the NULL byte.
+This removal can occurs with many system API (ie. usage of the File object).</p>
+<p>
+<b>Reference</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246949/Null%20Byte%20Injection">WASC-28: Null Byte Injection</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+
+    <rule key="WEAK_TRUST_MANAGER" priority="MAJOR">
+        <configKey><![CDATA[WEAK_TRUST_MANAGER]]></configKey>
+        <name><![CDATA[Security - Weak TrustManager implementation [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>Empty TrustManager implementation are often used to connected easily to a host that is not signed by a root
+<a href="http://en.wikipedia.org/wiki/Certificate_authority">certificate authority</a>. As a consequence, a
+<a href="http://en.wikipedia.org/wiki/Man-in-the-middle_attack">Man-in-the-middle attack</a>
+can occurs since the client will be trusting any given certificate.
+</p>
+
+<p>
+A TrustManager allowing specific certificates (based on a truststore for example) should be built.
+Detail information for a proper implementation :
+<a href="http://stackoverflow.com/a/6378872/89769">[1]</a> <a href="http://stackoverflow.com/a/5493452/89769">[2]</a>
+</p>
+
+<p>
+<b>Reference</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246945/Insufficient%20Transport%20Layer%20Protection">WASC-04: Insufficient Transport Layer Protection</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="JAXWS_ENDPOINT" priority="MAJOR">
+        <configKey><![CDATA[JAXWS_ENDPOINT]]></configKey>
+        <name><![CDATA[Security - JAX-WS (JSR224) endpoint [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>This method is part of a SOAP Web Service.</p>
+<p>
+<b>Analysis needed</b>
+<ul>
+<li>The inputs should be track for potential vulnerability.</li>
+<li>The authentification (if inforce) should be tested using a web client.</li>
+<li>The communication should ideally be over SSL.</li>
+</ul>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="JAXRS_ENDPOINT" priority="MAJOR">
+        <configKey><![CDATA[JAXRS_ENDPOINT]]></configKey>
+        <name><![CDATA[Security - JAX-RS (JSR311) endpoint [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>This method is part of a REST Web Service.</p>
+<p>
+<b>Analysis needed</b>
+<ul>
+<li>The input should be track for potential vulnerability.</li>
+<li>The authentification (if inforce) should be tested using a web client.</li>
+<li>The communication should ideally be over SSL.</li>
+<li>If the method allow include GET/POST, CSRF vulnerability should investigate.<sup>[1]</sup></li>
+</ul>
+</p>
+<p>
+1. <a href="https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)">OWASP - Cross-Site Request Forgery</a>
+]]>
+        </description>
+    </rule>
+
+    <rule key="TAPESTRY_ENDPOINT" priority="MAJOR">
+        <configKey><![CDATA[TAPESTRY_ENDPOINT]]></configKey>
+        <name><![CDATA[Security - Tapestry Page [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>Tapestry endpoint are discover at the application startup and are requires to be in <code>[base.package.name].pages</code>.
+When a request is received, the GET/POST parameters are mapped to field. The mapping is either done with fieldName:</p>
+<pre><code>
+[...]
+protected String input;
+[...]
+</code></pre>
+<p>or
+the definition of an explicit annotation:
+</p>
+<pre><code>
+[...]
+@org.apache.tapestry5.annotations.Parameter
+protected String parameter1;
+
+@org.apache.tapestry5.annotations.Component(id = "password")
+private PasswordField passwordField;
+[...]
+</code></pre>
+<p>The page is mapped to the view <code>[/package/PageName].tml.</code></p>
+]]>
+        </description>
+    </rule>
+
+
+    <rule key="WICKET_ENDPOINT" priority="MAJOR">
+        <configKey><![CDATA[WICKET_ENDPOINT]]></configKey>
+        <name><![CDATA[Security - Wicket WebPage [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>This class represent a Wicket WebPage.</p>
+<p>The input are read from a PageParameters instance passed to the constructor.</p>
+<p>The current page is mapped to the view [/package/WebPageName].html.</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="WEAK_MESSAGE_DIGEST" priority="MAJOR">
+        <configKey><![CDATA[WEAK_MESSAGE_DIGEST]]></configKey>
+        <name><![CDATA[Security - Weak MessageDigest [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The algorithm used is not a recommended MessageDigest.</p>
+<p>The <a href="http://csrc.nist.gov/groups/ST/toolkit/secure_hashing.html">NIST</a> recommended to use either SHA-1, SHA-224*, SHA-256, SHA-384 or SHA-512.</p>
+<p><small>* SHA-224 algorithm is not provided by <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html#SUNProvider"> SUN provider.</a></small></p>
+<p>
+<b>Reference</b><br/>
+<a href="http://csrc.nist.gov/groups/ST/toolkit/secure_hashing.html">NIST Approved Algorithms</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="CUSTOM_MESSAGE_DIGEST" priority="MAJOR">
+        <configKey><![CDATA[CUSTOM_MESSAGE_DIGEST]]></configKey>
+        <name><![CDATA[Security - Custom MessageDigest [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>Implementing custom MessageDigest is error-prone.</p>
+<p>The <a href="http://csrc.nist.gov/groups/ST/toolkit/secure_hashing.html">NIST</a> recommended to use either SHA-1, SHA-224*, SHA-256, SHA-384 or SHA-512.</p>
+<p><small>* SHA-224 algorithm is not provided by <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html#SUNProvider"> SUN provider.</a></small></p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="FILE_UPLOAD_FILENAME" priority="MAJOR">
+        <configKey><![CDATA[FILE_UPLOAD_FILENAME]]></configKey>
+        <name><![CDATA[Security - Tainted filename read [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>The filename given by FileUpload api can be tampered by the client.</p>
+<p>It can take value such as:</p>
+<ul>
+<li><code>"../../../config/overide_file"</code></li>
+<li><code>"shell.jsp\u0000expected.gif"</code></li>
+</ul>
+<p>Therefore it should not be passed directly to filesystem api. If acceptable, a new filename should be picked.
+Otherwise, the original filename should be properly escaped.</p>
+<p>
+<b>Reference</b><br/>
+<a href="http://blogs.securiteam.com/index.php/archives/1268">Securiteam: File upload security recommendations</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+ <rule key="REDOS" priority="MAJOR">
+        <configKey><![CDATA[REDOS]]></configKey>
+     <name><![CDATA[Security - ReDOS [find-sec-bugs]]]></name>
+     <description>
+         <![CDATA[
+
+<p>
+ReDOS stands for Regular expression Denial of Service. The regular expression (RegEx) identify may take a large amount of time
+when analysing certain strings.
+</a>
+<p>
+For example the following RegEx, the input "<code>aaaaaaaaaaaaaaaaX</code>" will cause the RegEx engine to analyse 65536 different paths.<sup>[1] Example taken from OWASP referecen</sup>
+<pre>^(a+)+$</pre>
+Therefore, it is possible that a single request cause a large amount of computation on the server side.
+</p>
+
+<p>
+<b>References</b><br/>
+<a href="http://www.jroller.com/sebastianKuebeck/entry/detecting_and_preventing_redos_vulnerabilities">Sebastian Kubeck's Weblog: Detecting and Preventing ReDoS Vulnerabilities</a><br/>
+<sup>[1]</sup> <a href="https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS">OWASP : Regular expression Denial of Service</a>
+</p>
+]]>
+     </description>
+ </rule>
+
+
+    <rule key="XXE" priority="MAJOR">
+        <configKey><![CDATA[XXE]]></configKey>
+        <name><![CDATA[Security - XML parsing vulnerable to XXE attacks [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>Xml External Entity attacks can occurs when the XML parsers support XML entities and received
+user input as XML content.</p>
+<b>Risk 1: Expose local file content</b>
+<p>
+<pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;!DOCTYPE foo [
+&lt;!ELEMENT foo ANY &gt;
+&lt;!ENTITY xxe SYSTEM &quot;file:///etc/passwd&quot; &gt; ]&gt;
+&lt;foo&gt;&amp;xxe;&lt;/foo&gt;
+</pre>
+</p>
+<b>Risk 2: Denial of service</b>
+<p>
+<pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE s [
+&lt;!ENTITY x &quot;OVERLONG_CONTENT_HERE_WITH_MORE_THAN_10^5_CHARACTERS&quot;&gt;
+]&gt;
+&lt;foo&gt;
+&amp;x;
+&amp;x;
+[...]
+&lt;/foo&gt;
+</pre>
+</p>
+<p>
+<b>References</b><br/>
+<a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61702260">CERT: IDS10-J. Prevent XML external entity attacks</a><br/>
+<a href="https://www.owasp.org/index.php/Testing_for_XML_Injection_(OWASP-DV-008)">OWASP : Testing for XML Injection</a><br/>
+<a href="http://clawslab.nds.rub.de/wiki/index.php/XML_Generic_Entity_Expansion">WS-Attacks.org: XML Generic Entity Expansion</a><br/>
+<a href="http://clawslab.nds.rub.de/wiki/index.php/XML_External_Entity_DOS">WS-Attacks.org: XML External Entity DOS</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="XPATH_INJECTION" priority="MAJOR">
+        <configKey><![CDATA[XPATH_INJECTION]]></configKey>
+        <name><![CDATA[Security - Potential XPath Injection [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+XPath injection risks are simlar to SQL injection. If the XPath query contain unfilter user input, the complete datasource
+could be expose.
+</p>
+<p>
+<b>References</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246963/SQL%20Injection">WASC-39: XPath Injection</a><br/>
+<a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61407250">CERT: IDS09-J. Prevent XPath Injection (archive)</a><br/>
+<a href="http://media.blackhat.com/bh-eu-12/Siddharth/bh-eu-12-Siddharth-Xpath-WP.pdf">Black Hat Europe 2012: Hacking XPath 2.0</a><br/>
+<a href="http://www.balisage.net/Proceedings/vol7/html/Vlist02/BalisageVol7-Vlist02.html">Balisage: XQuery Injection</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="STRUTS1_ENDPOINT" priority="MAJOR">
+        <configKey><![CDATA[STRUTS1_ENDPOINT]]></configKey>
+        <name><![CDATA[Security - Struts 1 Action [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>This class is a Struts Action.</p>
+<p>Once a request is route to this controller, a Form object will be builded that constains
+the HTTP parameters.</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="STRUTS2_ENDPOINT" priority="MAJOR">
+        <configKey><![CDATA[STRUTS2_ENDPOINT]]></configKey>
+        <name><![CDATA[Security - Struts 2 endpoint [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>In struts 2, the endpoint are Plain Old Java Object (POJO) which means no Interface/Class are implements/extends.</p>
+<p>When a request is route to its controller (like the selected class). The different HTTP parameters are mapped to setter of
+the class. Therefor all setter of this class should be consider as input even if the form expected to be used doesn't include
+all of them.</p>
+
+]]>
+        </description>
+    </rule>
+
+    <rule key="SPRING_ENDPOINT" priority="MAJOR">
+        <configKey><![CDATA[SPRING_ENDPOINT]]></configKey>
+        <name><![CDATA[Security - Spring endpoint [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>This class is a Spring Controller. All method annotated with <code>RequestMapping</code> are reachable remotely.</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="SQL_INJECTION" priority="MAJOR">
+        <configKey><![CDATA[SQL_INJECTION]]></configKey>
+        <name><![CDATA[Security - Potential SQL Injection [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+The input values associated to the SQL queries should be escape properly. Prepare statement can be use to easily mitigate the risk
+(Available for all major API : JDO, JPA and Hibernate). Alternatively, typed API such as Hibernate Criteria and Querydsl
+can be used.
+</p>
+<p>
+<b>References</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246963/SQL%20Injection">WASC-19: SQL Injection</a><br/>
+<a href="http://capec.mitre.org/data/definitions/66.html">CAPEC-66: SQL Injection</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="LDAP_INJECTION" priority="MAJOR">
+        <configKey><![CDATA[LDAP_INJECTION]]></configKey>
+        <name><![CDATA[Security - Potential LDAP Injection [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+Just like SQL query, all inputs place inside LDAP query should be escape properly.
+</p>
+<p>
+<b>References</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246947/LDAP%20Injection">WASC-29: LDAP Injection</a><br/>
+<a href="http://cwe.mitre.org/data/definitions/90.html">CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection')</a><br/>
+<a href="http://www.veracode.com/security/ldap-injection">LDAP Injection Guide: Learn How to Detect LDAP Injections and Improve LDAP Security</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="BAD_HEXA_CONVERSION" priority="MAJOR">
+        <configKey><![CDATA[BAD_HEXA_CONVERSION]]></configKey>
+        <name><![CDATA[Security - Bad hexadecimal concatenation [find-sec-bugs]]]></name>
+        <description>
+<![CDATA[
+<p>When converting a byte array to a string, a conversion mistake can be made if the array is read byte by byte.
+The following sample illustrate the use of Integer.toHexString() which will trim the trailling "0".
+<pre>
+MessageDigest md = MessageDigest.getInstance("SHA-1");
+byte[] resultBytes = md.digest(password.getBytes("UTF-8"));
+
+StringBuilder stringBuilder = new StringBuilder();
+for(byte b :resultBytes) {
+stringBuilder.append( Integer.toHexString( b & 0xFF ) );
+}
+
+return stringBuilder.toString();
+</pre>
+</p>
+
+<p>
+This mistake can weaken the hashing function use since more collisions are introduce.<br/>
+The values "0x0679" "0x6709" would become "679".
+</p>
+
+<p>
+In this situation, the use of toHexString() should be replace by a String.format() as follow.
+<pre>
+stringBuilder.append( String.format( "%02X", b ) );
+</pre>
+</p>
+]]>
+        </description>
+    </rule>
+
+
+    <rule key="ECB_MODE" priority="MAJOR">
+        <configKey><![CDATA[ECB_MODE]]></configKey>
+        <name><![CDATA[Security - ECB mode used [find-sec-bugs]]]></name>
+        <description>
+<![CDATA[
+<p>A CBC mode cipher should be used instead of ECB mode.</p>
+<p>
+<b>References</b><br/>
+<a href="http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Electronic_codebook_.28ECB.29">Wikipedia: Block cipher modes of operation</a><br/>
+<a href="http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf">NIST: Recommendation for Block Cipher Modes of Operation</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="HAZELCAST_SYMMETRIC_ENCRYPTION" priority="MAJOR">
+        <configKey><![CDATA[HAZELCAST_SYMMETRIC_ENCRYPTION]]></configKey>
+        <name><![CDATA[Security - Hazelcast Symmetric encryption [find-sec-bugs]]]></name>
+        <description>
+<![CDATA[
+<p>The network communication for Hazelcast is configure to a symmetric cipher (probably DES or blowfish).</p>
+<p>Those ciphers alone do not provide integrity or secure authentification.</a>.
+The use of assymetric encryption should be privilege.</p>
+<p>
+<b>Reference</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246945/Insufficient%20Transport%20Layer%20Protection">WASC-04 : Insufficient Transport Layer Protection</a><br/>
+<a href="http://www.hazelcast.com/documentation.jsp#Encryption">Hazelcast Documentation : Encryption (see second part)</a><br/>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="NULL_CIPHER" priority="MAJOR">
+        <configKey><![CDATA[NULL_CIPHER]]></configKey>
+        <name><![CDATA[Security - The use of NullCipher might be unwanted [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+The NullCipher is rarelly use. It implement the Cipher interface by returning a ciphertext identical to the plaintext.
+In few context including testing, NullCipher can be appropriate.
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="UNENCRYPTED_SOCKET" priority="MAJOR">
+        <configKey><![CDATA[UNENCRYPTED_SOCKET]]></configKey>
+        <name><![CDATA[Security - Unencrypted socket [find-sec-bugs]]]></name>
+        <description>
+<![CDATA[
+<p>
+The communication started will not be encrypted. The traffic could be red by an attacker intercepting the communication.
+</p>
+<p>
+Plain socket (Clear text communication):
+<pre>Socket soc = new Socket("www.google.com",80);</pre>
+</p>
+<p>
+SSL Socket (Secure communication):
+<pre>Socket soc = SSLSocketFactory.getDefault().createSocket("www.google.com", 443);</pre>
+</p>
+
+<p>
+<b>Reference</b><br/>
+<a href="https://www.owasp.org/index.php/Top_10_2010-A9">OWASP : Insufficient Transport Layer Protection</a><br/>
+<a href="http://projects.webappsec.org/w/page/13246945/Insufficient%20Transport%20Layer%20Protection">WASC-04 : Insufficient Transport Layer Protection</a><br/>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="DES_USAGE" priority="MAJOR">
+        <configKey><![CDATA[DES_USAGE]]></configKey>
+        <name><![CDATA[Security - DES / DESede usage [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+DES and DESede (3DES), previously recommended, are not consider strong ciphers for modern applications. DESede should
+only be use because of hardware limitation. Currently, the NIST recommend the usage of AES block cipher.
+</p>
+<p>
+<b>References</b><br/>
+<a href="http://www.nist.gov/itl/fips/060205_des.cfm">NIST Withdraws Outdated Data Encryption Standard</a><br/>
+<a href="http://cwe.mitre.org/data/definitions/327.html">CWE-327: Use of a Broken or Risky Cryptographic Algorithm</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="RSA_NO_PADDING" priority="MAJOR">
+        <configKey><![CDATA[RSA_NO_PADDING]]></configKey>
+        <name><![CDATA[Security - RSA NoPadding [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+The software uses the RSA algorithm but does not incorporate Optimal Asymmetric Encryption Padding (OAEP), which might weaken the encryption.
+</p>
+<p>
+Weak example:<br/>
+<pre>Cipher.getInstance("RSA/NONE/NoPadding")</pre>
+</p>
+<p>
+It should be replace by:<br/>
+<pre>Cipher.getInstance("RSA/ECB/OAEPWithMD5AndMGF1Padding")</pre>
+</p>
+<p>
+<b>Reference</b><br/>
+<a href="http://cwe.mitre.org/data/definitions/780.html">CWE-780: Use of RSA Algorithm without OAEP</a><br/>
+<a href="http://rdist.root.org/2009/10/06/why-rsa-encryption-padding-is-critical/">Root Labs: Why RSA encryption padding is critical</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="HARD_CODE_PASSWORD" priority="MAJOR">
+        <configKey><![CDATA[HARD_CODE_PASSWORD]]></configKey>
+        <name><![CDATA[Security - Hard code password [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+Password should not be kept in the source code. The source code are widely share in the entreprise environement.
+Passwords and secret keys can be managed more easily when being separated in configuration files or keystores.
+</p>
+<p>
+<b>References</b><br/>
+<a href="http://cwe.mitre.org/data/definitions/321.html">CWE-321: Use of Hard-coded Cryptographic Key</a><br/>
+<a href="http://cwe.mitre.org/data/definitions/259.html">CWE-259: Use of Hard-coded Password</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="STRUTS_FORM_VALIDATION" priority="MAJOR">
+        <configKey><![CDATA[STRUTS_FORM_VALIDATION]]></configKey>
+        <name><![CDATA[Security - Struts Form with no input validation [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+Form inputs should have minimal input validation. Preventive validation can possibly mitigate unknown risk.
+</p>
+<p>
+Validation can be introduce by implementing a <code>validate</code> method.
+<pre>
+public class RegistrationForm extends ValidatorForm {
+
+private String name;
+private String email;
+
+public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+//Validate the properties
+}
+
+[...]
+}
+</pre>
+</p>
+<p>
+<b>Reference</b><br/>
+<a href="http://cwe.mitre.org/data/definitions/106.html">CWE-106: Struts: Plug-in Framework not in Use</a>
+</p>
+]]>
+        </description>
+    </rule>
+
+    <rule key="XSS_REQUEST_WRAPPER" priority="MAJOR">
+        <configKey><![CDATA[XSS_REQUEST_WRAPPER]]></configKey>
+        <name><![CDATA[Security - XSSRequestWrapper is a weak XSS protection [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+A implementation of <code>HttpServletRequestWrapper</code> called <code>XSSRequestWrapper</code> was publish through
+various blog sites. <sup><a href="http://java.dzone.com/articles/stronger-anti-cross-site">[1]</a></sup>
+<sup><a href="http://www.javacodegeeks.com/2012/07/anti-cross-site-scripting-xss-filter.html">[2]</a></sup>
+</p>
+<p>
+The filtering is weak for few reasons:
+<ul>
+<li>It covers only parameters not headers and side-channel inputs</li>
+<li>The replace chain can be bypass easly (see example below)</li>
+<li>It's a black list of very specific patterns</li>
+</ul>
+</p>
+<p>
+<b>Example of bypass</b><br/>
+</p>
+<pre>&lt;scrivbscript:pt&gt;alert(1)&lt;/scrivbscript:pt&gt;</pre>
+<p>
+The previous input will be transform to <b><code>"&lt;script&gt;alert(1)&lt;/script&gt;"</code></b>.
+
+The removal of <code>"vbscript:"</code> is after the replacement of <code>"&lt;script&gt;.*&lt;/script&gt;"</code>.
+</p>
+<p>
+For an indepth protection, choose solution that filter characters automatically in the <b><u>view</u></b> (template, jsp, ...).
+</p>
+]]>
+        </description>
+    </rule>
+
+</rules>
