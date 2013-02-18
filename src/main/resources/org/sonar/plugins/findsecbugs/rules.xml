@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules>
 
-    <rule key="PREDICTABLE_RANDOM" priority="MAJOR">
+    <rule key="PREDICTABLE_RANDOM" priority="CRITICAL">
         <configKey><![CDATA[PREDICTABLE_RANDOM]]></configKey>
         <name><![CDATA[Security - Predictable Pseudo Random Generator (PRG) [find-sec-bugs]]]></name>
         <description>
@@ -54,7 +54,7 @@ The HTTP header Content-Type can be control by the client.
     </rule>
 
 
-    <rule key="SERVLET_SERVER_NAME" priority="MAJOR">
+    <rule key="SERVLET_SERVER_NAME" priority="CRITICAL">
         <configKey><![CDATA[SERVLET_SERVER_NAME]]></configKey>
         <name><![CDATA[Security - Request Hostname (ServerName/Host) [find-sec-bugs]]]></name>
         <description>
@@ -76,7 +76,7 @@ escaping and validation if needed.
     </rule>
 
 
-    <rule key="SERVLET_SESSION_ID" priority="MAJOR">
+    <rule key="SERVLET_SESSION_ID" priority="CRITICAL">
         <configKey><![CDATA[SERVLET_SESSION_ID]]></configKey>
         <name><![CDATA[Security - Request Session Id [find-sec-bugs]]]></name>
         <description>
@@ -122,7 +122,7 @@ be passed.</p>
     </rule>
 
 
-    <rule key="SERVLET_HEADER_REFERER" priority="MAJOR">
+    <rule key="SERVLET_HEADER_REFERER" priority="CRITICAL">
         <configKey><![CDATA[SERVLET_HEADER_REFERER]]></configKey>
         <name><![CDATA[Security - Request Header "Referer" [find-sec-bugs]]]></name>
         <description>
@@ -155,17 +155,7 @@ crawler UA) is not recommended.</p>
         </description>
     </rule>
 
-    <rule key="SERVLET_HEADER" priority="MAJOR">
-        <configKey><![CDATA[SERVLET_HEADER]]></configKey>
-        <name><![CDATA[Security - Request Header [find-sec-bugs]]]></name>
-        <description>
-            <![CDATA[
-<p>Request header can easily be alter by the client. No assumption should be make that the request come from a regular browser</p>
-]]>
-        </description>
-    </rule>
-
-    <rule key="COOKIE_USAGE" priority="MAJOR">
+    <rule key="COOKIE_USAGE" priority="CRITICAL">
         <configKey><![CDATA[COOKIE_USAGE]]></configKey>
         <name><![CDATA[Security - Cookie usage [find-sec-bugs]]]></name>
         <description>
@@ -177,7 +167,7 @@ variables should be used. see HttpSession (HttpServletRequest.getSession())</p>
         </description>
     </rule>
 
-    <rule key="PATH_TRAVERSAL_IN" priority="MAJOR">
+    <rule key="PATH_TRAVERSAL_IN" priority="CRITICAL">
         <configKey><![CDATA[PATH_TRAVERSAL_IN]]></configKey>
         <name><![CDATA[Security - Potential Path traversal (read file) [find-sec-bugs]]]></name>
         <description>
@@ -197,7 +187,7 @@ by the user. If it is the case, this bug instance can be ignored.</p>
         </description>
     </rule>
 
-    <rule key="PATH_TRAVERSAL_OUT" priority="MAJOR">
+    <rule key="PATH_TRAVERSAL_OUT" priority="CRITICAL">
         <configKey><![CDATA[PATH_TRAVERSAL_OUT]]></configKey>
         <name><![CDATA[Security - Potential Path traversal (write file) [find-sec-bugs]]]></name>
         <description>
@@ -215,7 +205,7 @@ by the user. If it is the case, this bug instance can be ignored.</p>
         </description>
     </rule>
 
-    <rule key="COMMAND_INJECTION" priority="MAJOR">
+    <rule key="COMMAND_INJECTION" priority="BLOCKER">
         <configKey><![CDATA[COMMAND_INJECTION]]></configKey>
         <name><![CDATA[Security - Command Injection [find-sec-bugs]]]></name>
         <description>
@@ -229,7 +219,7 @@ by the user. If it is the case, this bug instance can be ignored.</p>
         </description>
     </rule>
 
-    <rule key="WEAK_FILENAMEUTILS" priority="MAJOR">
+    <rule key="WEAK_FILENAMEUTILS" priority="CRITICAL">
         <configKey><![CDATA[WEAK_FILENAMEUTILS]]></configKey>
         <name><![CDATA[Security - FilenameUtils partial filtering [find-sec-bugs]]]></name>
         <description>
@@ -246,7 +236,7 @@ This removal can occurs with many system API (ie. usage of the File object).</p>
     </rule>
 
 
-    <rule key="WEAK_TRUST_MANAGER" priority="MAJOR">
+    <rule key="WEAK_TRUST_MANAGER" priority="BLOCKER">
         <configKey><![CDATA[WEAK_TRUST_MANAGER]]></configKey>
         <name><![CDATA[Security - Weak TrustManager implementation [find-sec-bugs]]]></name>
         <description>
@@ -271,7 +261,7 @@ Detail information for a proper implementation :
         </description>
     </rule>
 
-    <rule key="JAXWS_ENDPOINT" priority="MAJOR">
+    <rule key="JAXWS_ENDPOINT" priority="MINOR">
         <configKey><![CDATA[JAXWS_ENDPOINT]]></configKey>
         <name><![CDATA[Security - JAX-WS (JSR224) endpoint [find-sec-bugs]]]></name>
         <description>
@@ -289,7 +279,7 @@ Detail information for a proper implementation :
         </description>
     </rule>
 
-    <rule key="JAXRS_ENDPOINT" priority="MAJOR">
+    <rule key="JAXRS_ENDPOINT" priority="MINOR">
         <configKey><![CDATA[JAXRS_ENDPOINT]]></configKey>
         <name><![CDATA[Security - JAX-RS (JSR311) endpoint [find-sec-bugs]]]></name>
         <description>
@@ -310,7 +300,7 @@ Detail information for a proper implementation :
         </description>
     </rule>
 
-    <rule key="TAPESTRY_ENDPOINT" priority="MAJOR">
+    <rule key="TAPESTRY_ENDPOINT" priority="MINOR">
         <configKey><![CDATA[TAPESTRY_ENDPOINT]]></configKey>
         <name><![CDATA[Security - Tapestry Page [find-sec-bugs]]]></name>
         <description>
@@ -340,7 +330,7 @@ private PasswordField passwordField;
     </rule>
 
 
-    <rule key="WICKET_ENDPOINT" priority="MAJOR">
+    <rule key="WICKET_ENDPOINT" priority="MINOR">
         <configKey><![CDATA[WICKET_ENDPOINT]]></configKey>
         <name><![CDATA[Security - Wicket WebPage [find-sec-bugs]]]></name>
         <description>
@@ -352,7 +342,7 @@ private PasswordField passwordField;
         </description>
     </rule>
 
-    <rule key="WEAK_MESSAGE_DIGEST" priority="MAJOR">
+    <rule key="WEAK_MESSAGE_DIGEST" priority="CRITICAL">
         <configKey><![CDATA[WEAK_MESSAGE_DIGEST]]></configKey>
         <name><![CDATA[Security - Weak MessageDigest [find-sec-bugs]]]></name>
         <description>
@@ -368,7 +358,7 @@ private PasswordField passwordField;
         </description>
     </rule>
 
-    <rule key="CUSTOM_MESSAGE_DIGEST" priority="MAJOR">
+    <rule key="CUSTOM_MESSAGE_DIGEST" priority="CRITICAL">
         <configKey><![CDATA[CUSTOM_MESSAGE_DIGEST]]></configKey>
         <name><![CDATA[Security - Custom MessageDigest [find-sec-bugs]]]></name>
         <description>
@@ -401,12 +391,11 @@ Otherwise, the original filename should be properly escaped.</p>
         </description>
     </rule>
 
- <rule key="REDOS" priority="MAJOR">
+    <rule key="REDOS" priority="MAJOR">
         <configKey><![CDATA[REDOS]]></configKey>
-     <name><![CDATA[Security - ReDOS [find-sec-bugs]]]></name>
-     <description>
-         <![CDATA[
-
+        <name><![CDATA[Security - ReDOS [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
 <p>
 ReDOS stands for Regular expression Denial of Service. The regular expression (RegEx) identify may take a large amount of time
 when analysing certain strings.
@@ -423,11 +412,10 @@ Therefore, it is possible that a single request cause a large amount of computat
 <sup>[1]</sup> <a href="https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS">OWASP : Regular expression Denial of Service</a>
 </p>
 ]]>
-     </description>
- </rule>
+        </description>
+    </rule>
 
-
-    <rule key="XXE" priority="MAJOR">
+    <rule key="XXE" priority="CRITICAL">
         <configKey><![CDATA[XXE]]></configKey>
         <name><![CDATA[Security - XML parsing vulnerable to XXE attacks [find-sec-bugs]]]></name>
         <description>
@@ -489,7 +477,7 @@ could be expose.
         </description>
     </rule>
 
-    <rule key="STRUTS1_ENDPOINT" priority="MAJOR">
+    <rule key="STRUTS1_ENDPOINT" priority="MINOR">
         <configKey><![CDATA[STRUTS1_ENDPOINT]]></configKey>
         <name><![CDATA[Security - Struts 1 Action [find-sec-bugs]]]></name>
         <description>
@@ -501,7 +489,7 @@ the HTTP parameters.</p>
         </description>
     </rule>
 
-    <rule key="STRUTS2_ENDPOINT" priority="MAJOR">
+    <rule key="STRUTS2_ENDPOINT" priority="MINOR">
         <configKey><![CDATA[STRUTS2_ENDPOINT]]></configKey>
         <name><![CDATA[Security - Struts 2 endpoint [find-sec-bugs]]]></name>
         <description>
@@ -515,7 +503,7 @@ all of them.</p>
         </description>
     </rule>
 
-    <rule key="SPRING_ENDPOINT" priority="MAJOR">
+    <rule key="SPRING_ENDPOINT" priority="MINOR">
         <configKey><![CDATA[SPRING_ENDPOINT]]></configKey>
         <name><![CDATA[Security - Spring endpoint [find-sec-bugs]]]></name>
         <description>
@@ -562,7 +550,7 @@ Just like SQL query, all inputs place inside LDAP query should be escape properl
         </description>
     </rule>
 
-    <rule key="BAD_HEXA_CONVERSION" priority="MAJOR">
+    <rule key="BAD_HEXA_CONVERSION" priority="CRITICAL">
         <configKey><![CDATA[BAD_HEXA_CONVERSION]]></configKey>
         <name><![CDATA[Security - Bad hexadecimal concatenation [find-sec-bugs]]]></name>
         <description>
@@ -598,7 +586,7 @@ stringBuilder.append( String.format( "%02X", b ) );
     </rule>
 
 
-    <rule key="ECB_MODE" priority="MAJOR">
+    <rule key="ECB_MODE" priority="CRITICAL">
         <configKey><![CDATA[ECB_MODE]]></configKey>
         <name><![CDATA[Security - ECB mode used [find-sec-bugs]]]></name>
         <description>
@@ -613,7 +601,7 @@ stringBuilder.append( String.format( "%02X", b ) );
         </description>
     </rule>
 
-    <rule key="HAZELCAST_SYMMETRIC_ENCRYPTION" priority="MAJOR">
+    <rule key="HAZELCAST_SYMMETRIC_ENCRYPTION" priority="CRITICAL">
         <configKey><![CDATA[HAZELCAST_SYMMETRIC_ENCRYPTION]]></configKey>
         <name><![CDATA[Security - Hazelcast Symmetric encryption [find-sec-bugs]]]></name>
         <description>
@@ -630,7 +618,7 @@ The use of assymetric encryption should be privilege.</p>
         </description>
     </rule>
 
-    <rule key="NULL_CIPHER" priority="MAJOR">
+    <rule key="NULL_CIPHER" priority="CRITICAL">
         <configKey><![CDATA[NULL_CIPHER]]></configKey>
         <name><![CDATA[Security - The use of NullCipher might be unwanted [find-sec-bugs]]]></name>
         <description>
@@ -669,7 +657,7 @@ SSL Socket (Secure communication):
         </description>
     </rule>
 
-    <rule key="DES_USAGE" priority="MAJOR">
+    <rule key="DES_USAGE" priority="CRITICAL">
         <configKey><![CDATA[DES_USAGE]]></configKey>
         <name><![CDATA[Security - DES / DESede usage [find-sec-bugs]]]></name>
         <description>
@@ -687,7 +675,7 @@ only be use because of hardware limitation. Currently, the NIST recommend the us
         </description>
     </rule>
 
-    <rule key="RSA_NO_PADDING" priority="MAJOR">
+    <rule key="RSA_NO_PADDING" priority="CRITICAL">
         <configKey><![CDATA[RSA_NO_PADDING]]></configKey>
         <name><![CDATA[Security - RSA NoPadding [find-sec-bugs]]]></name>
         <description>
@@ -730,7 +718,7 @@ Passwords and secret keys can be managed more easily when being separated in con
         </description>
     </rule>
 
-    <rule key="STRUTS_FORM_VALIDATION" priority="MAJOR">
+    <rule key="STRUTS_FORM_VALIDATION" priority="CRITICAL">
         <configKey><![CDATA[STRUTS_FORM_VALIDATION]]></configKey>
         <name><![CDATA[Security - Struts Form with no input validation [find-sec-bugs]]]></name>
         <description>
@@ -762,7 +750,7 @@ public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) 
         </description>
     </rule>
 
-    <rule key="XSS_REQUEST_WRAPPER" priority="MAJOR">
+    <rule key="XSS_REQUEST_WRAPPER" priority="CRITICAL">
         <configKey><![CDATA[XSS_REQUEST_WRAPPER]]></configKey>
         <name><![CDATA[Security - XSSRequestWrapper is a weak XSS protection [find-sec-bugs]]]></name>
         <description>
