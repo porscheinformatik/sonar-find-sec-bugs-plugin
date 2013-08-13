@@ -1,5 +1,5 @@
 /*
- * Sonar find-sec-bugs Plugin
+ * Sonar Find Security Bugs Plugin
  * Copyright (C) 2013 Porsche Informatik
  * dev@sonar.codehaus.org
  *
