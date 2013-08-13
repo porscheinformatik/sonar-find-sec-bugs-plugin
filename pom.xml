@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>sonar-find-sec-bugs-plugin</artifactId>
-  <version>1.1</version>
+  <version>1.2-SNAPSHOT</version>
   <packaging>sonar-plugin</packaging>
 
   <name>Sonar Find Security Bugs Plugin</name>
@@ -39,7 +39,7 @@
     <connection>scm:git:http://github.com/porscheinformatik/sonar-find-sec-bugs-plugin.git</connection>
     <developerConnection>scm:git:http://github.com/porscheinformatik/sonar-find-sec-bugs-plugin.git</developerConnection>
     <url>https://github.com/porscheinformatik/sonar-find-sec-bugs-plugin</url>
-    <tag>1.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
