@@ -36,8 +36,10 @@
   </developers>
 
   <scm>
-    <url>https://github.com/porscheinformatik/sonar-find-sec-bugs-plugin</url>
     <connection>scm:git:http://github.com/porscheinformatik/sonar-find-sec-bugs-plugin.git</connection>
+    <developerConnection>scm:git:http://github.com/porscheinformatik/sonar-find-sec-bugs-plugin.git</developerConnection>
+    <url>https://github.com/porscheinformatik/sonar-find-sec-bugs-plugin</url>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
