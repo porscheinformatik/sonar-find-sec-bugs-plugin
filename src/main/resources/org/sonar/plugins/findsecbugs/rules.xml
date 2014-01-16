@@ -783,5 +783,77 @@ For an indepth protection, choose solution that filter characters automatically 
 ]]>
         </description>
     </rule>
-
+    <rule key="XSS_JSP_PRINT" priority="CRITICAL">
+        <configKey><![CDATA[XSS_JSP_PRINT]]></configKey>
+        <name><![CDATA[Security - Potential execution of unwanted Javascript in JSP [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+A potential XSS was found. It could be use to execute unwanted Javascript on client browser. (See references) </p>
+<p>
+<b>Vulnerable code:</b>
+<pre>
+<%
+String taintedInput = (String) request.getAttribute("input");
+%>
+[...]
+<%= taintedInput %>
+</pre>
+</p>
+<p>
+<b>Proper code:</b>
+<pre>
+<%
+String taintedInput = (String) request.getAttribute("input");
+%>
+[...]
+<%= ESAPI.encoder().encodeForHTML(taintedInput) %>
+</pre>
+</p>
+<p>
+<b>References</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8 : Cross Site Scripting</a><br/>
+<a href="https://www.owasp.org/index.php/Top_10_2010-A2-Cross-Site_Scripting_(XSS)">OWASP Top 10 A2 :Cross-Site Scripting (XSS)</a><br/>
+<a href="http://cwe.mitre.org/data/definitions/79.html">CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')</a>
+</p>
+]]>
+        </description>
+    </rule>
+    
+    <rule key="XSS_SERVLET" priority="CRITICAL">
+        <configKey><![CDATA[XSS_SERVLET]]></configKey>
+        <name><![CDATA[Security - Potential execution of unwanted Javascript in SERVLET [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+A potential XSS was found. It could be use to execute unwanted Javascript on client browser. (See references)
+</p>
+<p>
+<b>Vulnerable code:</b>
+<pre>protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+String input1 = req.getParameter("input1");
+[...]
+resp.getWriter().write(input1);
+}
+</pre>
+</p>
+<p>
+<b>Proper code:</b>
+<pre>
+protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+String input1 = req.getParameter("input1");
+[...]
+resp.getWriter().write(ESAPI.encoder().encodeForHTML(input1));
+}
+</pre>
+</p>
+<p>
+<b>References</b><br/>
+<a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8 : Cross Site Scripting</a><br/>
+<a href="https://www.owasp.org/index.php/Top_10_2010-A2-Cross-Site_Scripting_(XSS)">OWASP Top 10 A2 :Cross-Site Scripting (XSS)</a><br/>
+<a href="http://cwe.mitre.org/data/definitions/79.html">CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')</a>
+</p>
+]]>
+        </description>
+    </rule>
 </rules>
