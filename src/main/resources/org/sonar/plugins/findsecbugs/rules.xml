@@ -783,7 +783,86 @@ For an indepth protection, choose solution that filter characters automatically 
 ]]>
         </description>
     </rule>
-    <rule key="XSS_JSP_PRINT" priority="CRITICAL">
+    
+    <rule key="BLOWFISH_KEY_SIZE" priority="MAJOR">
+        <configKey><![CDATA[BLOWFISH_KEY_SIZE]]></configKey>
+        <name><![CDATA[Security - Blowfish usage with weak key size [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+The Blowfish cipher supported keysize from 32 bits to 448 bits.
+Small key size make the the ciphertext vulnerable to brute force attack.
+At least 128 bits entropy should be used when generating the key.
+</p>
+<p>
+Unless the code is a legacy implementation that need maintenance, AES block cipher should be
+use instead.
+</p>
+<p>
+<b>Reference</b><br/>
+<a href="http://en.wikipedia.org/wiki/Blowfish_(cipher)">Blowfish_(cipher)</a>
+</p>
+]]>
+        </description>
+    </rule>
+    
+    <rule key="RSA_KEY_SIZE" priority="MAJOR">
+        <configKey><![CDATA[RSA_KEY_SIZE]]></configKey>
+        <name><![CDATA[Security - RSA usage with weak key size [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>"RSA Laboratories currently recommends key sizes of 1024 bits for corporate use and 2048 bits for extremely valuable keys like the root key pair used by a certifying authority". <sup>[1]</sup></p>
+
+<p>The KeyPairGenerator creation should be as follow.
+<pre>
+KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+keyGen.initialize(2048);
+</pre>
+</p>
+<p>
+<b>References</b><br/>
+[1] <a href="http://www.rsa.com/rsalabs/node.asp?id=2218">RSA Laboratories : 3.1.5 How large a key should be used in the RSA cryptosystem?</a><br/>
+<a href="http://en.wikipedia.org/wiki/Key_size#Asymmetric%5Falgorithm%5Fkey%5Flengths">Wikipedia : Asymmetric algorithm key lengths</a>
+</p>
+]]>
+        </description>
+    </rule>
+        
+    <rule key="UNVALIDATED_REDIRECT" priority="MAJOR">
+        <configKey><![CDATA[UNVALIDATED_REDIRECT]]></configKey>
+        <name><![CDATA[Security - Unvalidated redirect [find-sec-bugs]]]></name>
+        <description>
+            <![CDATA[
+<p>
+    Unvalidated request is a vulnerability that facilitate fishing attack.
+</p>
+<p>
+    <b>Scenario</b><br/>
+    1. A user is requested to visit the malicious url : http://website.com/login?redirect=http://evil.vvebsite.com/fake/login<br/>
+    2. The user is redirect to a fake login. (http://evil.vvebsite.com/fake/login)<br/>
+    3. The user enter his credentials.<br/>
+    4. He is redirect to the original website.<br/>
+    <br/>
+    This is attack is plausible because most users don't double check the url after the redirection. Also, redirection to
+    authenticate are very common.
+</p>
+<p>
+    <b>Counter measures</b><br/>
+    <ul>
+        <li>White list URLs (if possible)</li>
+        <li>Validate that the beginning of the URL is part of white list</li>
+    </ul>
+</p>
+<p>
+    <b>References</b><br/>
+    <a href="http://projects.webappsec.org/w/page/13246981/URL%20Redirector%20Abuse">WASC-38 : URL Redirector Abuse</a><br/>
+    <a href="https://www.owasp.org/index.php/Top_10_2010-A10-Unvalidated_Redirects_and_Forwards">OWASP Top 10 A10: Unvalidated Redirects and Forwards</a>
+</p>
+]]>
+        </description>
+    </rule>
+        
+    <rule key="XSS_JSP_PRINT" priority="MAJOR">
         <configKey><![CDATA[XSS_JSP_PRINT]]></configKey>
         <name><![CDATA[Security - Potential execution of unwanted Javascript in JSP [find-sec-bugs]]]></name>
         <description>
@@ -820,7 +899,7 @@ String taintedInput = (String) request.getAttribute("input");
         </description>
     </rule>
     
-    <rule key="XSS_SERVLET" priority="CRITICAL">
+    <rule key="XSS_SERVLET" priority="MAJOR">
         <configKey><![CDATA[XSS_SERVLET]]></configKey>
         <name><![CDATA[Security - Potential execution of unwanted Javascript in SERVLET [find-sec-bugs]]]></name>
         <description>
