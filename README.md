@@ -10,10 +10,13 @@ All rules are set to a default priority of major - this can be customized in you
 ### Release 1.0, 2013-02-18
 
  - Initial release
- - find-sec-bugs version: 1.0  
+ - find-sec-bugs version: 1.0
 
 ### Release 1.1, 2013-08-13
 
  - Changed plugin name
- - find-sec-bugs version: 1.1  
- 
+ - find-sec-bugs version: 1.1
+
+### Release 1.2.0, 2014-09-12
+ - find-sec-bugs version: 1.2.0
+ - Use a separate repository name "find-security-bugs" (not "findbugs")
