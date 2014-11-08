@@ -32,8 +32,8 @@ public class FindSecBugsRuleRepository extends RuleRepository
 
     public FindSecBugsRuleRepository(XMLRuleParser xmlRuleParser)
     {
-        super("find-security-bugs", Java.KEY);
-        setName("Find Security Bugs");
+        super("findbugs", Java.KEY);
+        setName("Findbugs");
         this.xmlRuleParser = xmlRuleParser;
     }
 
