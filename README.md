@@ -1,7 +1,7 @@
 Find Security Bugs Sonar Plugin
 ===================
 
-This project is closed since Find-Security-Bugs is now included in [SonarQube's own FindBugs Pluign](http://docs.sonarqube.org/display/PLUG/FindBugs+Plugin).
+This project is closed since Find-Security-Bugs is now included in [SonarQube's own FindBugs Pluign](https://github.com/SonarQubeCommunity/sonar-findbugs).
 
 # Old Description
 
